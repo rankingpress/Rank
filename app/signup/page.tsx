@@ -1,0 +1,117 @@
+import { EmailForm } from "@/components/EmailForm";
+import VisitDashboard from "@/components/compositions/VisitDashboard";
+import WhatNext from "@/components/compositions/WhatNext";
+import useSiteKey from "@/components/effects/useSiteKey";
+import Divider from "@/components/elements/Divider";
+import Link from "next/link";
+
+import styles from "@/components/elements/PageShared.module.scss";
+import CopyButton from "@/components/CopyButton";
+
+export default function IndexPage() {
+  const { siteKey } = useSiteKey();
+
+  return (
+    <section className={styles.Content}>
+      <div className={styles.Section}>
+        <h1 className="text-3xl font-extrabold leading-tight tracking-tighter md:text-4xl">
+          Arcjet signup form protection
+        </h1>
+        <p className="max-w-[700px] text-lg">
+          This form uses{" "}
+          <Link
+            href="https://docs.arcjet.com/signup-protection/concepts"
+            className="hover:underline font-bold decoration-1 underline-offset-2"
+          >
+            Arcjet&apos;s signup form protection
+          </Link>{" "}
+          which includes:
+        </p>
+        <ul className="ms-8 max-w-[700px] list-outside list-disc text-secondary-foreground">
+          <li className="text-lg">
+            Arcjet server-side email verification configured to block disposable
+            providers and ensure that the domain has a valid MX record.
+          </li>
+          <li className="text-lg pt-4">
+            Rate limiting set to 5 requests over a 2 minute sliding window - a
+            reasonable limit for a signup form, but easily configurable.
+          </li>
+          <li className="text-lg pt-4">
+            Bot protection to stop automated clients from submitting the form.
+          </li>
+        </ul>
+      </div>
+
+      <Divider />
+
+      <div className={styles.Section}>
+        <h2 className="text-xl font-bold">Try it</h2>
+
+        <div className="flex gap-4">
+          <EmailForm />
+        </div>
+
+        {siteKey && <VisitDashboard />}
+
+        <h2 className="text-xl font-bold">Test emails</h2>
+        <p className="text-secondary-foreground">
+          Try these emails to see how it works:
+        </p>
+        <ul className="ms-8 list-outside list-disc">
+          <li className="text-muted-foreground">
+            <code className="text-secondary-foreground">
+              invalid.@arcjet
+              <CopyButton />
+            </code>{" "}
+            – is an invalid email address.
+          </li>
+          <li className="text-muted-foreground pt-2">
+            <code className="text-secondary-foreground">
+              test@0zc7eznv3rsiswlohu.tk
+              <CopyButton />
+            </code>{" "}
+            – is from a disposable email provider.
+          </li>
+          <li className="text-muted-foreground pt-2">
+            <code className="text-secondary-foreground">
+              nonexistent@arcjet.ai
+              <CopyButton />
+            </code>{" "}
+            – is a valid email address & domain, but has no MX records.
+          </li>
+        </ul>
+      </div>
+
+      <Divider />
+
+      <div className={styles.Section}>
+        <h2 className="text-xl font-bold">See the code</h2>
+        <p className="text-secondary-foreground">
+          The{" "}
+          <Link
+            href="https://github.com/arcjet/arcjet-js-example/blob/main/app/signup/test/route.ts"
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold decoration-1 underline-offset-2 hover:underline"
+          >
+            API route
+          </Link>{" "}
+          imports a{" "}
+          <Link
+            href="https://github.com/arcjet/arcjet-js-example/blob/main/lib/arcjet.ts"
+            target="_blank"
+            rel="noreferrer"
+            className="font-bold decoration-1 underline-offset-2 hover:underline"
+          >
+            centralized Arcjet client
+          </Link>{" "}
+          which sets base rules.
+        </p>
+      </div>
+
+      <Divider />
+
+      <WhatNext deployed={siteKey != null} />
+    </section>
+  );
+}
